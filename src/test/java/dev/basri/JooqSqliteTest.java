@@ -23,14 +23,8 @@ public class JooqSqliteTest {
     private static final Field<Long> INDEX_FIELD = DSL.field("log_index", SQLDataType.BIGINT);
     private static final Field<byte[]> LOG_ENTRY_FIELD = DSL.field("log_entry", SQLDataType.BINARY);
 
-    private static final int DATA_SIZE_BYTES = 16384; // 16 KB
-
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
-
-    private int entryCount = 100000;
-
-    private int batchSize = 100;
 
     private CloseableDSLContext dsl;
 
@@ -50,14 +44,15 @@ public class JooqSqliteTest {
     public void test() throws Exception {
         long index = 0;
         LOGGER.info("START");
-        for (int i = 0; i < entryCount / batchSize; i++) {
+        for (int i = 0, j = Utils.ENTRY_COUNT / Utils.BATCH_SIZE; i < j; i++) {
             if (i % 100 == 0) {
                 LOGGER.info("i=" + i);
             }
 
-            for (int j = 0; j < batchSize; j++) {
+            for (int k = 0; k < Utils.BATCH_SIZE; k++) {
                 dsl.insertInto(LOG_ENTRIES_TABLE, INDEX_FIELD, LOG_ENTRY_FIELD)
-                        .values(index++, Utils.randomBytes(DATA_SIZE_BYTES))
+                        .values(index++, Utils.randomBytes())
+                        .onDuplicateKeyIgnore()
                         .execute();
             }
 

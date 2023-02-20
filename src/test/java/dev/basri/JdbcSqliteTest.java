@@ -17,14 +17,8 @@ public class JdbcSqliteTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcSqliteTest.class);
 
-    private static final int DATA_SIZE_BYTES = 16384; // 16 KB
-
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
-
-    private int entryCount = 100000;
-
-    private int batchSize = 100;
 
     private Connection conn;
 
@@ -48,15 +42,16 @@ public class JdbcSqliteTest {
     public void test() throws Exception {
         int index = 0;
         LOGGER.info("START");
-        for (int i = 0; i < entryCount / batchSize; i++) {
+        for (int i = 0, j = Utils.ENTRY_COUNT / Utils.BATCH_SIZE; i < j; i++) {
             if (i % 100 == 0) {
                 LOGGER.info("i=" + i);
             }
 
-            PreparedStatement st = conn.prepareStatement("INSERT INTO log_entries VALUES (?, ?)");
-            for (int j = 0; j < batchSize; j++) {
+            PreparedStatement st = conn.prepareStatement("INSERT OR IGNORE INTO log_entries VALUES (?, ?)");
+            for (int k = 0; k < Utils.BATCH_SIZE; k++) {
                 st.setInt(1, index++);
-                st.setBinaryStream(2, new ByteArrayInputStream(Utils.randomBytes(DATA_SIZE_BYTES)), DATA_SIZE_BYTES);
+                byte[] data = Utils.randomBytes();
+                st.setBinaryStream(2, new ByteArrayInputStream(data), data.length);
                 st.addBatch();
             }
 

@@ -10,11 +10,25 @@ import org.sqlite.SQLiteConfig.TempStore;
 
 public final class Utils {
     private static final Random RANDOM = new Random();
-    
-    private Utils() {
-    }   
 
-    public static SQLiteConfig  getSqliteConfig() {
+    public static final int DATA_SIZE_BYTES;
+
+    public static final int ENTRY_COUNT;
+
+    public static final int BATCH_SIZE;
+
+    static {
+        DATA_SIZE_BYTES = Integer.parseInt(System.getProperty("dataSizeBytes", Integer.toString(16384)));
+
+        ENTRY_COUNT = Integer.parseInt(System.getProperty("entryCount", Integer.toString(100_000)));
+
+        BATCH_SIZE = Integer.parseInt(System.getProperty("batchSize", Integer.toString(100)));
+    }
+
+    private Utils() {
+    }
+
+    public static SQLiteConfig getSqliteConfig() {
         SQLiteConfig config = new SQLiteConfig();
 
         // https://www.sqlite.org/pragma.html#pragma_journal_mode
@@ -40,8 +54,8 @@ public final class Utils {
         return "jdbc:sqlite:" + dbFile.getPath();
     }
 
-    public static byte[] randomBytes(int size) {
-        byte[] b = new byte[size];
+    public static byte[] randomBytes() {
+        byte[] b = new byte[DATA_SIZE_BYTES];
         RANDOM.nextBytes(b);
         return b;
     }
