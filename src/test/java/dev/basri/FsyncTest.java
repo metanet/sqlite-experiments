@@ -49,7 +49,8 @@ public class FsyncTest {
             }
 
             bos.flush();
-            fos.getFD().sync();
+            // fos.getFD().sync();
+            fos.getChannel().force(false);
         }
         LOGGER.info("END");
     }
