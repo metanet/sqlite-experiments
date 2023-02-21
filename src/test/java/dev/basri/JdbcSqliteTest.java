@@ -5,6 +5,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +39,11 @@ public class JdbcSqliteTest {
         conn.commit();
     }
 
+    @After
+    public void shutdown() throws Exception {
+        conn.close();
+    }
+
     @Test
     public void test() throws Exception {
         int index = 0;
@@ -59,7 +65,6 @@ public class JdbcSqliteTest {
             conn.commit();
         }
         LOGGER.info("END");
-        conn.close();
     }
 
 }

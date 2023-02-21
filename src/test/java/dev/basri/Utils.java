@@ -3,12 +3,16 @@ package dev.basri;
 import java.io.File;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.JournalMode;
 import org.sqlite.SQLiteConfig.Pragma;
 import org.sqlite.SQLiteConfig.TempStore;
 
 public final class Utils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+
     private static final Random RANDOM = new Random();
 
     public static final int DATA_SIZE_BYTES;
@@ -23,6 +27,8 @@ public final class Utils {
         ENTRY_COUNT = Integer.parseInt(System.getProperty("entryCount", Integer.toString(100_000)));
 
         BATCH_SIZE = Integer.parseInt(System.getProperty("batchSize", Integer.toString(100)));
+
+        LOGGER.info("Data size bytes: {}, entry count: {}, batch size: {}", DATA_SIZE_BYTES, ENTRY_COUNT, BATCH_SIZE);
     }
 
     private Utils() {

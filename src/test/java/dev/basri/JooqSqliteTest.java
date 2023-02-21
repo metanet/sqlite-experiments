@@ -9,6 +9,7 @@ import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class JooqSqliteTest {
     private CloseableDSLContext dsl;
 
     @Before
-    public void before() throws Exception {
+    public void init() throws Exception {
         File sqliteDb = new File(tempDir.newFolder(), "sqlite.db");
         this.dsl = DSL.using(Utils.getJdbcUrl(sqliteDb), Utils.getSqliteConfig().toProperties());
         dsl.connection(conn -> conn.setAutoCommit(false));
@@ -38,6 +39,11 @@ public class JooqSqliteTest {
                 .primaryKey(INDEX_FIELD).execute();
 
         dsl.connection(Connection::commit);
+    }
+
+    @After
+    public void shutdown() throws Exception {
+        dsl.close();
     }
 
     @Test
