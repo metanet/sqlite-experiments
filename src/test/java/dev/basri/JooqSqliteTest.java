@@ -27,12 +27,14 @@ public class JooqSqliteTest {
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
+    private File dbFile;
     private CloseableDSLContext dsl;
 
     @Before
     public void init() throws Exception {
-        File sqliteDb = new File(tempDir.newFolder(), "sqlite.db");
-        this.dsl = DSL.using(Utils.getJdbcUrl(sqliteDb), Utils.getSqliteConfig().toProperties());
+        this.dbFile = new File(tempDir.newFolder(), "sqlite.db");
+        LOGGER.info("DB FILE: {}", dbFile.getPath());
+        this.dsl = DSL.using(Utils.getJdbcUrl(dbFile), Utils.getSqliteConfig().toProperties());
         dsl.connection(conn -> conn.setAutoCommit(false));
 
         dsl.createTableIfNotExists(LOG_ENTRIES_TABLE).column(INDEX_FIELD).column(LOG_ENTRY_FIELD)
@@ -44,6 +46,7 @@ public class JooqSqliteTest {
     @After
     public void shutdown() throws Exception {
         dsl.close();
+        LOGGER.info("File size in bytes: {} ", dbFile.length());
     }
 
     @Test

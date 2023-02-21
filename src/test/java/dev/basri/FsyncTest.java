@@ -20,12 +20,14 @@ public class FsyncTest {
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
+    private File file;
     private FileOutputStream fos;
     private BufferedOutputStream bos;
 
     @Before
     public void init() throws Exception {
-        File file = tempDir.newFile();
+        this.file = tempDir.newFile();
+        LOGGER.info("FILE: {}", file.getPath());
         this.fos = new FileOutputStream(file);
         this.bos = new BufferedOutputStream(fos, Utils.BATCH_SIZE * Utils.DATA_SIZE_BYTES);
     }
@@ -33,6 +35,7 @@ public class FsyncTest {
     @After
     public void shutdown() throws Exception {
         fos.close();
+        LOGGER.info("File size in bytes: {} ", file.length());
     }
 
     @Test

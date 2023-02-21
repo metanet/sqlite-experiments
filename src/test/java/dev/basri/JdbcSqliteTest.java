@@ -21,11 +21,12 @@ public class JdbcSqliteTest {
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
+    private File dbFile;
     private Connection conn;
 
     @Before
     public void init() throws Exception {
-        File dbFile = tempDir.newFile("test.sqlite");
+        this.dbFile = tempDir.newFile("test.sqlite");
         LOGGER.info("DB FILE: {}", dbFile.getPath());
 
         SQLiteDataSource ds = new SQLiteDataSource();
@@ -42,6 +43,7 @@ public class JdbcSqliteTest {
     @After
     public void shutdown() throws Exception {
         conn.close();
+        LOGGER.info("File size in bytes: {} ", dbFile.length());
     }
 
     @Test
